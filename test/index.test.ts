@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
+import layers from '../src/index'
 
-describe('should', () => {
-  it('exported', () => {
-    expect(1).toEqual(1)
+describe('astro-layers', () => {
+  it('creates a valid astro integration', () => {
+    const integration = layers()
+    expect(integration.name).toBe('astro-layers')
+    expect(integration.hooks).toBeDefined()
   })
 })

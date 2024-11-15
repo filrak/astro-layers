@@ -7,6 +7,9 @@ export default defineBuildConfig({
   declaration: true,
   clean: true,
   rollup: {
-    emitCJS: true,
+    emitCJS: false,
   },
+  externals: [
+    'astro',
+  ],
 })
