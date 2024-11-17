@@ -6,6 +6,76 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
+## Install
+
+Install the plugin using your preferred package manager:
+```bash
+pnpm install astro-layers
+```
+
+Add the plugin to your `astro.config.mjs`:
+```js
+import layers from 'astro-layers';
+
+export default defineConfig({
+  plugins: [layers()],
+  //...
+});
+```
+
+Now, create a `layers` directory in the root of your project and add some layers to it. Every file you put in a layer will override the default one in `src` folder. 
+
+```
+project-root/
+  layers/
+    layer-1/
+      pages/
+        index.astro // this will override default idnex.astro
+  src/
+    pages/
+      index.astro
+```
+
+## Layer Priority
+
+Layers are processed in alphabetical order. To control the priority, prefix your layer directories with numbers:
+
+```
+your-project/
+├── layers/
+│   ├── 1.base/
+│   │   └── pages/
+│   │       └── index.astro
+│   ├── 2.theme/
+│   │   └── pages/
+│   │       └── index.astro
+│   └── 3.premium/
+│       └── pages/
+│           └── index.astro
+└── src/
+    └── pages/
+        └── index.astro
+```
+
+In this example:
+- `1.base` will be checked first
+- `2.theme` will be checked second
+- `3.premium` will be checked last
+
+This naming convention makes it easy to:
+- Understand the layer priority at a glance
+- Insert new layers between existing ones (e.g., `1.5.feature`)
+- Maintain a clear loading order without additional configuration
+
+### Example Use Cases
+
+```
+layers/
+├── 1.base/          # Base components and layouts
+├── 2.theme/         # Theme-specific overrides
+├── 3.features/      # Feature-specific changes
+└── 4.customization/ # Customer-specific customizations
+```
 
 ## License
 
