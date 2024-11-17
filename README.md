@@ -30,7 +30,7 @@ project-root/
   layers/
     layer-1/
       pages/
-        index.astro // this will override default idnex.astro
+        index.astro # This will override default index.astro
   src/
     pages/
       index.astro
@@ -79,7 +79,7 @@ layers/
 
 ## License
 
-[MIT](./LICENSE) License © 2024-PRESENT [Anthony Fu](https://github.com/antfu)
+[MIT](./LICENSE) License © 2024-PRESENT [Filip Rakowski](https://github.com/filrak)
 
 <!-- Badges -->
 
