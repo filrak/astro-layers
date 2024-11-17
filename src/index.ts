@@ -1,79 +1,76 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-function normalizePath(filePath: any) {
-  const filePathStr = filePath instanceof URL ? filePath.pathname : String(filePath);
+function mergeLayeredFiles(rootDir: string | URL) {
+  // Convert URL to string if needed
+  const rootDirStr = rootDir instanceof URL ? rootDir.pathname : rootDir;
   
-  // TO-DO: decide if I wanna support both
-  // Extract the relative path from the full path
-  // Look for src/pages or just pages
-  const match = filePathStr.match(/(src\/)?pages\/.*$/);
-  if (!match) return filePathStr;
-  
-  return match[0].replace(/^src\//, '');
-}
-
-function findMatchingLayerFile(rootDir: any, normalFilePath: any) {
-  if (normalFilePath.includes('node_modules')) return null;
-  
-  const rootDirStr = rootDir instanceof URL ? rootDir.pathname : String(rootDir);
   const layersPath = path.join(rootDirStr, 'layers');
-  const relativePath = normalizePath(normalFilePath);
+  const outputPath = path.join(rootDirStr, '.layers');
   
+  // Ensure output directory exists
+  if (!fs.existsSync(outputPath)) {
+    fs.mkdirSync(outputPath, { recursive: true });
+  }
+  
+  // Get layers in reverse order (higher numbers override lower)
   const layers = fs.existsSync(layersPath) 
-    ? fs.readdirSync(layersPath).filter(f => 
-        fs.statSync(path.join(layersPath, f)).isDirectory())
+    ? fs.readdirSync(layersPath)
+        .filter(f => fs.statSync(path.join(layersPath, f)).isDirectory())
+        .sort((a, b) => b.localeCompare(a))
     : [];
     
+  console.log('[astro-layered-files] Available layers:', layers);
+  
+  // Copy files from each layer, overwriting as we go
   for (const layer of layers) {
-    const layerFilePath = path.join(layersPath, layer, relativePath);
-    if (fs.existsSync(layerFilePath)) {
-      console.log(`Found matching file in layer ${layer}:`, relativePath);
-      return layerFilePath;
-    }
+    const layerPath = path.join(layersPath, layer);
+    copyRecursive(layerPath, outputPath);
   }
+  
+  return outputPath;
+}
 
-  return null;
+function copyRecursive(src: any, dest: any) {
+  if (fs.statSync(src).isDirectory()) {
+    const files = fs.readdirSync(src);
+    
+    files.forEach(file => {
+      const srcPath = path.join(src, file);
+      const destPath = path.join(dest, file);
+      
+      if (fs.statSync(srcPath).isDirectory()) {
+        if (!fs.existsSync(destPath)) {
+          fs.mkdirSync(destPath, { recursive: true });
+        }
+        copyRecursive(srcPath, destPath);
+      } else {
+        fs.copyFileSync(srcPath, destPath);
+        console.log(`[astro-layered-files] Copied ${srcPath} to ${destPath}`);
+      }
+    });
+  }
 }
 
 export default function layeredFilesPlugin() {
-  let rootDir = '';
-  
   return {
     name: 'astro-layered-files',
     hooks: {
       'astro:config:setup': ({ command, config }) => {
-        rootDir = config.root || process.cwd();
+        const rootDir = config.root || process.cwd();
+        const mergedPath = mergeLayeredFiles(rootDir);
         
-        config.vite = config.vite || {};
-        config.vite.plugins = config.vite.plugins || [];
+        // Convert mergedPath to URL since Astro expects it
+        config.srcDir = new URL('.layers/', rootDir instanceof URL ? rootDir : new URL(`file://${rootDir}`));
         
-        config.vite.plugins.push({
-          name: 'vite-plugin-layered-files',
-          enforce: 'pre',
-          
-          resolveId(source, importer) {
-            if (!importer) return null;
-            if (importer.includes('node_modules')) return null;
-            
-            try {
-              const normalizedSource = normalizePath(source);
-              const layerFile = findMatchingLayerFile(rootDir, normalizedSource);
-              
-              if (layerFile) {
-                return layerFile;
-              }
-            } catch (error) {
-              console.error('Error in layered files plugin:', error);
-            }
-            
-            return null;
-          }
-        });
-      },
-      
-      'astro:build:start': ({ buildConfig }) => {
-        // Build starts silently now
+        // Watch layers directory for changes in dev mode
+        if (command === 'dev') {
+          const layersPath = path.join(rootDir instanceof URL ? rootDir.pathname : rootDir, 'layers');
+          fs.watch(layersPath, { recursive: true }, (eventType, filename) => {
+            console.log(`[astro-layered-files] Detected change in layers, remerging...`);
+            mergeLayeredFiles(rootDir);
+          });
+        }
       }
     }
   };
