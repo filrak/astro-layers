@@ -40,6 +40,12 @@ export default defineConfig({
 });
 ```
 
+Add `.layers` to your `.gitignore`:
+```bash
+# Astro Layers
+.layers
+```
+
 Now, create a `layers` directory in the root of your project and add some layers to it. Every file you put in a layer will override the default one in `src` folder. 
 
 ```
