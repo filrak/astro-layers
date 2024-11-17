@@ -1,5 +1,5 @@
-import { defineConfig } from 'astro'
-import layers from '../dist/index.mjs' // Using the local plugin
+import { defineConfig } from 'astro/config'
+import layers from '../src/index.ts' // Using the local plugin
 
 export default defineConfig({
   integrations: [
