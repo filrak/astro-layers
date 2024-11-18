@@ -15,8 +15,8 @@
   "keywords": ["astro-plugin", "astro", "withastro"],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     }
   },
   "main": "./dist/index.mjs",
@@ -29,6 +29,7 @@
     "build": "unbuild",
     "dev": "unbuild --stub",
     "lint": "eslint .",
+    "lint:fix": "nr lint --fix",
     "prepublishOnly": "nr build",
     "release": "bumpp && npm publish",
     "test": "vitest",
