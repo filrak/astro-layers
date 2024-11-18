@@ -12,13 +12,13 @@ function mergeLayeredFiles(rootDir: string | URL) {
   }
   
   // Get layers in reverse order (higher numbers override lower)
+  // Might decide to remove this functionality later and opt for config ordering
   const layers = fs.existsSync(layersPath) 
     ? fs.readdirSync(layersPath)
         .filter(f => fs.statSync(path.join(layersPath, f)).isDirectory())
         .sort((a, b) => b.localeCompare(a))
     : [];
     
-  // Copy files from each layer, overwriting as we go
   for (const layer of layers) {
     const layerPath = path.join(layersPath, layer);
     copyRecursive(layerPath, outputPath);
