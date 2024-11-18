@@ -1,5 +1,13 @@
 # Astro Layers
 
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![bundle][bundle-src]][bundle-href]
+[![JSDocs][jsdocs-src]][jsdocs-href]
+[![License][license-src]][license-href]
+
+> **Note:** This plugin is still under development and could have bugs. Current version offers only basic functionality.
+
 > Extend and override any Astro project files using a layered architecture - perfect for themes, white-labeling, and feature variations.
 
 This package allows you to create multiple layers of files that override your base Astro application. Think of it like CSS cascading - each layer can override any file from your source code or previous layers, while keeping the rest intact. This includes pages, components, layouts, styles, public assets, and any other project files.
@@ -14,14 +22,6 @@ For example, you can have a base e-commerce site and create different layers for
 - Feature variations (basic/premium)
 - Client-specific customizations
 - Regional adaptations (localized assets and content)
-
-[![npm version][npm-version-src]][npm-version-href]
-[![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![bundle][bundle-src]][bundle-href]
-[![JSDocs][jsdocs-src]][jsdocs-href]
-[![License][license-src]][license-href]
-
-> **Note:** This plugin is still under development and could have bugs. Current version offers only basic functionality.
 
 ## Install
 
