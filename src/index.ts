@@ -24,9 +24,9 @@ interface PluginOptions {
   external?: ExternalLayer
 }
 
-export default function layeredFilesPlugin(options: PluginOptions = {}): AstroIntegration {
+export default function layersPlugin(options: PluginOptions = {}): AstroIntegration {
   return {
-    name: 'astro-layered-files',
+    name: 'astro-layers',
     hooks: {
       'astro:config:setup': async ({ command, config, updateConfig, logger }) => {
         // we don't want to copy layers when running the preview command
