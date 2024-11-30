@@ -59,14 +59,13 @@ async function downloadExternalLayers(
     console.log(layerPath);
     await gitget({
       silent: true,
-      folder: layerPath,
+      folder: `./${layerPath}`,
       ...(source.startsWith('npm:') 
-        ? { npm: source.replace('npm:', ''), folder: `./${layerPath}`
+        ? { npm: source.replace('npm:', ''), 
       }
         : { 
             user: source.replace('git:', '').split('/')[0],
             repo: source.replace('git:', '').split('/')[1],
-            folder: `./${layerPath}`
           })
     });
   }

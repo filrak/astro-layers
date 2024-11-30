@@ -10,7 +10,7 @@
 
 > Extend and override any Astro project files using a layered architecture - perfect for themes, white-labeling, and feature variations.
 
-This package allows you to create multiple layers of files that override your base Astro application. Think of it like CSS cascading - each layer can override any file from your source code or previous layers, while keeping the rest intact. This includes pages, components, layouts, styles, public assets, and any other project files.
+This package allows you to create multiple layers of files that override your base Astro application, similarly on how ti works at [Nuxt.js](https://nuxt.com/docs/getting-started/layers). Think of it like CSS cascading - each layer can override any file from your source code or previous layers, while keeping the rest intact. This includes pages, components, layouts, styles, public assets, and any other project files.
 
 **Key Features:**
 - 🎨 Perfect for theming and white-labeling
@@ -99,6 +99,61 @@ layers/
 ├── 3.features/      # Feature-specific changes
 └── 4.customization/ # Customer-specific customizations
 ```
+
+## External Layers
+
+You can use layers from external sources like npm packages or git repositories. External layers follow the same naming convention as local layers to control priority.
+
+### Configuration
+
+Configure external layers in your `astro.config.mjs`:
+
+```js
+import layers from 'astro-layers';
+
+export default defineConfig({
+  plugins: [
+    layers({
+      external: {
+        '1.base-theme': 'npm:astro-base-theme',
+        '2.premium': 'git:username/repo',
+        '3.custom': 'git:username/repo#branch'
+      }
+    })
+  ],
+});
+```
+
+The keys (e.g., `1.base-theme`) determine the layer's priority, following the same numbering convention as local layers. Sources can be prefixed with:
+- `npm:` for npm packages
+- `git:` for GitHub repositories
+
+> **Important:** External layers must only contain a `src` directory structure as Astro Layers only overrides files within the `src` folder. Any other files or directories will be ignored.
+
+### Layer Priority Example
+
+```
+your-project/
+├── layers/
+│   ├── 1.core/
+│   └── 4.customization/
+└── .layers/
+    └── .external/
+        ├── 2.base-theme/    # from npm:astro-base-theme
+        └── 3.premium/       # from git:username/repo
+```
+
+In this example, layers will be applied in this order:
+1. Local `1.core`
+2. External `2.base-theme`
+3. External `3.premium`
+4. Local `4.customization`
+
+## Credits
+
+While the original idea for this package is originating from [article](https://vueschool.io/articles/vuejs-tutorials/build-file-based-theme-inheritance-module-in-nuxt/) I wrote long time ago on Vue School, the name is borrowed from [Nuxt.js Layers](https://nuxt.com/docs/getting-started/layers).
+
+Huge thanks to [Anthony Fu](https://github.com/antfu) for creating amazing [TS library starter](https://github.com/antfu/starter-ts) that this package is using.
 
 ## License
 
