@@ -1,7 +1,7 @@
 {
   "name": "astro-layers",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "packageManager": "pnpm@9.9.0",
   "description": "Astro plugin for managing layout layers",
   "author": "Filip Rakowski <filrak>",
