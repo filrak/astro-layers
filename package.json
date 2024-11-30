@@ -1,7 +1,7 @@
 {
   "name": "astro-layers",
   "type": "module",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "packageManager": "pnpm@9.9.0",
   "description": "Multi-layer file overrides from local directory, git or npm package. Works similarly to Nuxt Layers.",
   "author": "Filip Rakowski <filrak>",
