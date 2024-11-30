@@ -1,7 +1,7 @@
 {
   "name": "demo",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -11,4 +11,4 @@
   "dependencies": {
     "astro": "^4.0.0"
   }
-} 
+}

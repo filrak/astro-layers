@@ -6,7 +6,7 @@ export default defineConfig({
     layers({
       external: {
         // '3.astrowind': 'git:onwidget/astrowind'
-      }
-    })
-  ]
-}) 
+      },
+    }),
+  ],
+})

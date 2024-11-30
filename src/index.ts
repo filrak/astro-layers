@@ -10,7 +10,7 @@ interface ExternalLayer {
 }
 
 interface PluginOptions {
-    /**
+  /**
    * External layers to be downloaded from npm or git.
    * `npm:` prefix is used for npm packages, while `git:` is used for git repositories.
    * For example:
@@ -50,7 +50,7 @@ export default function layersPlugin(options: PluginOptions = {}): AstroIntegrat
         await mergeLayeredFiles(rootDir, options)
 
         updateConfig(config)
-        logger.info('Astro Layers Plugin is loaded. Files are now served up from .layers directory.');
+        logger.info('Astro Layers Plugin is loaded. Files are now served up from .layers directory.')
       },
     },
   }
@@ -86,7 +86,7 @@ function getOrderedLayers(layersPath: string, externalPath: string): string[] {
       .filter(file => fs.statSync(path.resolve(externalPath, file)).isDirectory())
     : []
 
-  return [...localLayers, ...externalLayers].sort((a, b) => a.localeCompare(b));
+  return [...localLayers, ...externalLayers].sort((a, b) => a.localeCompare(b))
 }
 
 function copyRecursive(sourcePath: string, destPath: string): void {

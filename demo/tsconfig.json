@@ -6,4 +6,4 @@
       "astro-layers": ["../dist/index.mjs"]
     }
   }
-} 
+}

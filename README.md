@@ -32,12 +32,12 @@ pnpm install astro-layers
 
 Add the plugin to your `astro.config.mjs`:
 ```js
-import layers from 'astro-layers';
+import layers from 'astro-layers'
 
 export default defineConfig({
   plugins: [layers()],
-  //...
-});
+  // ...
+})
 ```
 
 Add `.layers` to your `.gitignore`:
@@ -46,7 +46,7 @@ Add `.layers` to your `.gitignore`:
 .layers
 ```
 
-Now, create a `layers` directory in the root of your project and add some layers to it. Every file you put in a layer will override the default one in `src` folder. 
+Now, create a `layers` directory in the root of your project and add some layers to it. Every file you put in a layer will override the default one in `src` folder.
 
 ```
 project-root/
@@ -109,7 +109,7 @@ You can use layers from external sources like npm packages or git repositories. 
 Configure external layers in your `astro.config.mjs`:
 
 ```js
-import layers from 'astro-layers';
+import layers from 'astro-layers'
 
 export default defineConfig({
   plugins: [
@@ -121,7 +121,7 @@ export default defineConfig({
       }
     })
   ],
-});
+})
 ```
 
 The keys (e.g., `1.base-theme`) determine the layer's priority, following the same numbering convention as local layers. Sources can be prefixed with:

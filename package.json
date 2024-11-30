@@ -45,6 +45,9 @@
   "peerDependencies": {
     "astro": "^4.0.0"
   },
+  "dependencies": {
+    "gitget": "^0.0.14"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^3.3.2",
     "@antfu/ni": "^0.23.0",
@@ -55,8 +58,5 @@
     "typescript": "^5.5.4",
     "unbuild": "^2.0.0",
     "vitest": "^2.0.5"
-  },
-  "dependencies": {
-    "gitget": "^0.0.14"
   }
 }
