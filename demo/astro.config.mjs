@@ -5,7 +5,7 @@ export default defineConfig({
   integrations: [
     layers({
       external: {
-        '3.astrowind': 'git:onwidget/astrowind'
+        // '3.astrowind': 'git:onwidget/astrowind'
       }
     })
   ]
