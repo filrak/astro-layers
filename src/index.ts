@@ -18,7 +18,7 @@ export default function layeredFilesPlugin(options: PluginOptions = {}): AstroIn
     name: 'astro-layered-files',
     hooks: {
       'astro:config:setup': async ({ command, config, updateConfig }) => {
-        // we don't want to copy and watch layers when running the preview command
+        // we don't want to copy layers when running the preview command
         if (command === 'preview') {
           return
         }
