@@ -10,6 +10,17 @@ interface ExternalLayer {
 }
 
 interface PluginOptions {
+    /**
+   * External layers to be downloaded from npm or git.
+   * `npm:` prefix is used for npm packages, while `git:` is used for git repositories.
+   * For example:
+   * ```js
+   * { '3.premium': 'git:user/repo' }
+   * ```
+   * The layers will be resolved in the order they are defined.
+   * For example, if you have `1.core` and `2.premium` layers, and you define `external: { '3.premium': 'git:user/repo' }`,
+   * the `3.premium` layer will be applied after `2.premium` layer.
+   */
   external?: ExternalLayer
 }
 
@@ -39,6 +50,7 @@ export default function layeredFilesPlugin(options: PluginOptions = {}): AstroIn
         await mergeLayeredFiles(rootDir, options)
 
         updateConfig(config)
+        logger.info('Astro Layers Plugin is loaded. Files are now served up from .layers directory.');
       },
     },
   }
@@ -74,7 +86,7 @@ function getOrderedLayers(layersPath: string, externalPath: string): string[] {
       .filter(file => fs.statSync(path.resolve(externalPath, file)).isDirectory())
     : []
 
-  return [...localLayers, ...externalLayers].sort((a, b) => b.localeCompare(a))
+  return [...localLayers, ...externalLayers].sort((a, b) => a.localeCompare(b));
 }
 
 function copyRecursive(sourcePath: string, destPath: string): void {
@@ -105,7 +117,6 @@ async function downloadExternalLayers(
   for (const [layerName, source] of Object.entries(externalLayers)) {
     const layerPath = path.resolve(outputPath, '.external', layerName)
     ensureDirectoryExists(layerPath)
-    console.log(layerPath)
     await gitget({
       silent: true,
       folder: `./${layerPath}`,
