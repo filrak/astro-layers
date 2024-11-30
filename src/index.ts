@@ -56,7 +56,7 @@ async function downloadExternalLayers(
   for (const [layerName, source] of Object.entries(externalLayers)) {
     const layerPath = path.join(outputPath, '.external', layerName);
     ensureDirectoryExists(layerPath);
-    
+    console.log(layerPath);
     await gitget({
       silent: true,
       folder: layerPath,
@@ -82,7 +82,8 @@ async function mergeLayeredFiles(
   if (options.external) {
     const externalPath = path.join(paths.output, '.external');
     ensureDirectoryExists(externalPath);
-    await downloadExternalLayers(paths.output, options.external);
+    const rootPath = rootDir instanceof URL ? rootDir.pathname : rootDir;
+    await downloadExternalLayers(paths.output.replace(rootPath, ''), options.external);
   }
   
   const externalPath = path.join(paths.output, '.external');
