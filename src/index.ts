@@ -1,12 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-interface FileSystemPaths {
-  layers: string;
-  output: string;
-}
-
-function getDirectoryPaths(rootDir: string | URL): FileSystemPaths {
+function getDirectoryPaths(rootDir: string | URL) {
   const rootPath = rootDir instanceof URL ? rootDir.pathname : rootDir;
   return {
     layers: path.join(rootPath, 'layers'),
