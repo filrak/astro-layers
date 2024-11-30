@@ -12,7 +12,11 @@
     "url": "git+https://github.com/filrak/astro-layers"
   },
   "bugs": "https://github.com/filrak/astro-layers/issues",
-  "keywords": ["astro-plugin", "astro", "withastro"],
+  "keywords": [
+    "astro-plugin",
+    "astro",
+    "withastro"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -50,5 +54,8 @@
     "typescript": "^5.5.4",
     "unbuild": "^2.0.0",
     "vitest": "^2.0.5"
+  },
+  "dependencies": {
+    "gitget": "^0.0.14"
   }
 }

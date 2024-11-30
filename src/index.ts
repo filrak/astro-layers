@@ -1,50 +1,71 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-function mergeLayeredFiles(rootDir: string | URL) {
-  const rootDirStr = rootDir instanceof URL ? rootDir.pathname : rootDir;
-  
-  const layersPath = path.join(rootDirStr, 'layers');
-  const outputPath = path.join(rootDirStr, '.layers');
-  
-  if (!fs.existsSync(outputPath)) {
-    fs.mkdirSync(outputPath, { recursive: true });
-  }
-  
-  // Get layers in reverse order (higher numbers override lower)
-  // Might decide to remove this functionality later and opt for config ordering
-  const layers = fs.existsSync(layersPath) 
-    ? fs.readdirSync(layersPath)
-        .filter(f => fs.statSync(path.join(layersPath, f)).isDirectory())
-        .sort((a, b) => b.localeCompare(a))
-    : [];
-    
-  for (const layer of layers) {
-    const layerPath = path.join(layersPath, layer);
-    copyRecursive(layerPath, outputPath);
-  }
-  
-  return outputPath;
+interface FileSystemPaths {
+  layers: string;
+  output: string;
 }
 
-function copyRecursive(src: any, dest: any) {
-  if (fs.statSync(src).isDirectory()) {
-    const files = fs.readdirSync(src);
-    
-    files.forEach(file => {
-      const srcPath = path.join(src, file);
-      const destPath = path.join(dest, file);
-      
-      if (fs.statSync(srcPath).isDirectory()) {
-        if (!fs.existsSync(destPath)) {
-          fs.mkdirSync(destPath, { recursive: true });
-        }
-        copyRecursive(srcPath, destPath);
-      } else {
-        fs.copyFileSync(srcPath, destPath);
-      }
-    });
+function getDirectoryPaths(rootDir: string | URL): FileSystemPaths {
+  const rootPath = rootDir instanceof URL ? rootDir.pathname : rootDir;
+  return {
+    layers: path.join(rootPath, 'layers'),
+    output: path.join(rootPath, '.layers')
+  };
+}
+
+function ensureDirectoryExists(dirPath: string): void {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
   }
+}
+
+function getOrderedLayers(layersPath: string): string[] {
+  if (!fs.existsSync(layersPath)) return [];
+  
+  return fs.readdirSync(layersPath)
+    .filter(file => fs.statSync(path.join(layersPath, file)).isDirectory())
+    .sort((a, b) => b.localeCompare(a));
+}
+
+function copyRecursive(sourcePath: string, destPath: string): void {
+  const isDirectory = fs.statSync(sourcePath).isDirectory();
+  if (!isDirectory) return;
+
+  const files = fs.readdirSync(sourcePath);
+  
+  for (const file of files) {
+    const srcPath = path.join(sourcePath, file);
+    const dstPath = path.join(destPath, file);
+    
+    if (fs.statSync(srcPath).isDirectory()) {
+      ensureDirectoryExists(dstPath);
+      copyRecursive(srcPath, dstPath);
+    } else {
+      fs.copyFileSync(srcPath, dstPath);
+    }
+  }
+}
+
+function mergeLayeredFiles(rootDir: string | URL): string {
+  const paths = getDirectoryPaths(rootDir);
+  ensureDirectoryExists(paths.output);
+  
+  const layers = getOrderedLayers(paths.layers);
+  
+  for (const layer of layers) {
+    const layerPath = path.join(paths.layers, layer);
+    copyRecursive(layerPath, paths.output);
+  }
+  
+  return paths.output;
+}
+
+function createFileWatcher(rootDir: string | URL): void {
+  const paths = getDirectoryPaths(rootDir);
+  fs.watch(paths.layers, { recursive: true }, () => {
+    mergeLayeredFiles(rootDir);
+  });
 }
 
 export default function layeredFilesPlugin() {
@@ -55,13 +76,12 @@ export default function layeredFilesPlugin() {
         const rootDir = config.root || process.cwd();
         mergeLayeredFiles(rootDir);
         
-        config.srcDir = new URL('.layers/', rootDir instanceof URL ? rootDir : new URL(`file://${rootDir}`));
+        config.srcDir = new URL('.layers/', 
+          rootDir instanceof URL ? rootDir : new URL(`file://${rootDir}`)
+        );
         
         if (command === 'dev') {
-          const layersPath = path.join(rootDir instanceof URL ? rootDir.pathname : rootDir, 'layers');
-          fs.watch(layersPath, { recursive: true }, (eventType, filename) => {
-            mergeLayeredFiles(rootDir);
-          });
+          createFileWatcher(rootDir);
         }
       }
     }
