@@ -6,8 +6,6 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
-> **Note:** This plugin is still under development and could have bugs. Current version offers only basic functionality.
-
 > Extend and override any Astro project files using a layered architecture - perfect for themes, white-labeling, and feature variations.
 
 This package allows you to create multiple layers of files that override your base Astro application, similarly on how ti works at [Nuxt.js](https://nuxt.com/docs/getting-started/layers). Think of it like CSS cascading - each layer can override any file from your source code or previous layers, while keeping the rest intact. This includes pages, components, layouts, styles, public assets, and any other project files.
